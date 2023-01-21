@@ -1,4 +1,4 @@
-import { HeaderContainer, LocationButton, ShoppingCartButton } from './styles'
+import { HeaderContainer, Location, ShoppingCartButton } from './styles'
 
 import { MapPin, ShoppingCart } from 'phosphor-react'
 
@@ -9,12 +9,12 @@ export function Home() {
     <HeaderContainer>
       <img src={logo} alt="" />
       <nav>
-        <LocationButton>
-          <MapPin />
+        <Location>
+          <MapPin weight="fill" size={22} />
           Porto Alegre, RS
-        </LocationButton>
+        </Location>
         <ShoppingCartButton>
-          <ShoppingCart />
+          <ShoppingCart weight="fill" size={22} />
         </ShoppingCartButton>
       </nav>
     </HeaderContainer>

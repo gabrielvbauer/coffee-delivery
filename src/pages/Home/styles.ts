@@ -1,7 +1,9 @@
 import styled from 'styled-components'
 
 export const HeaderContainer = styled.header`
-  padding: 160px 32px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 32px 160px;
 
   display: flex;
   flex: 1;
@@ -14,10 +16,30 @@ export const HeaderContainer = styled.header`
   }
 `
 
-export const LocationButton = styled.button`
+export const Location = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+
   background-color: ${(props) => props.theme['purple-300']};
+  color: ${(props) => props.theme['purple-700']};
 `
 
 export const ShoppingCartButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px;
+  border: 0;
+  border-radius: 6px;
+  font-size: 0.875rem;
+
+  cursor: pointer;
   background-color: ${(props) => props.theme['yellow-300']};
+  color: ${(props) => props.theme['yellow-700']};
 `
