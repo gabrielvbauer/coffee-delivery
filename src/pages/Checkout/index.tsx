@@ -3,8 +3,14 @@ import {
   CreditCard,
   CurrencyDollar,
   MapPinLine,
+  Minus,
   Money,
+  Plus,
+  Trash,
+  TrashSimple,
 } from 'phosphor-react'
+
+import expresso from '../../assets/coffes/expresso.png'
 
 import {
   CheckoutContainer,
@@ -14,6 +20,14 @@ import {
   AddressInputs,
   PaymentHeader,
   PaymentOptions,
+  SelectedCoffeeContainer,
+  Actions,
+  AmmountSelector,
+  ConfirmOrderButton,
+  ListDivider,
+  RemoveCoffeeFromCartButton,
+  SummaryContainer,
+  SummaryInfo,
 } from './styles'
 
 export function Checkout() {
@@ -70,6 +84,52 @@ export function Checkout() {
       </main>
       <aside>
         <h2>Cafés selecionados</h2>
+        
+        <SummaryContainer>
+          <SelectedCoffeeContainer>
+            <img src={expresso} alt="" />
+
+            <div>
+              <span>Expresso Tradicional</span>
+              <Actions>
+                <AmmountSelector>
+                  <Minus />
+                  <span>1</span>
+                  <Plus />
+                </AmmountSelector>
+                <RemoveCoffeeFromCartButton>
+                  <Trash weight="fill" />
+                  <span>REMOVER</span>
+                </RemoveCoffeeFromCartButton>
+              </Actions>
+            </div>
+
+            <span>R$ 19,80</span>
+          </SelectedCoffeeContainer>
+
+          <ListDivider />
+
+          <SummaryInfo>
+            <div>
+              <span>Total de itens</span>
+              <span>R$ 29,70</span>
+            </div>
+
+            <div>
+              <span>Entrega</span>
+              <span>R$ 3,50</span>
+            </div>
+
+            <div>
+              <span>Total</span>
+              <span>R$ 33,20</span>
+            </div>
+          </SummaryInfo>
+          
+          <ConfirmOrderButton>
+            CONFIRMAR PEDIDO
+          </ConfirmOrderButton>
+        </SummaryContainer> 
       </aside>
     </CheckoutContainer>
   )

@@ -18,3 +18,12 @@ export const AddressInputs = styled.div``
 export const PaymentHeader = styled.div``
 
 export const PaymentOptions = styled.div``
+
+export const SummaryContainer = styled.div``
+export const SelectedCoffeeContainer = styled.div``
+export const Actions = styled.div``
+export const AmmountSelector = styled.div``
+export const RemoveCoffeeFromCartButton = styled.button``
+export const ListDivider = styled.div``
+export const SummaryInfo = styled.div``
+export const ConfirmOrderButton = styled.button``
