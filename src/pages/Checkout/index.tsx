@@ -28,83 +28,107 @@ import {
   RemoveCoffeeFromCartButton,
   SummaryContainer,
   SummaryInfo,
+  SectionTitle,
+  CardTitle,
+  CardDescription,
+  CEPContainer,
+  StreetContainer,
+  MinorInfo,
+  MajorInfo,
+  CoffeeInfo,
+  CoffeeTotal,
+  SummaryTotal,
+  SummaryTotalPrice,
 } from './styles'
 
 export function Checkout() {
   return (
     <CheckoutContainer>
       <main>
-        <h2>Complete o seu pedido</h2>
+        <SectionTitle>Complete o seu pedido</SectionTitle>
 
         <AddressContainer>
           <AddressHeader>
-            <MapPinLine />
-            <p>Endereço de Entrega</p>
-            <p>Informe o endereço onde deseja receber seu pedido</p>
+            <MapPinLine size={22} />
+            <div>
+              <CardTitle>Endereço de Entrega</CardTitle>
+              <CardDescription>Informe o endereço onde deseja receber seu pedido</CardDescription>
+            </div>
           </AddressHeader>
 
           <AddressInputs>
-            <input type="text" placeholder="CEP" />
-            <input type="text" placeholder="Rua" />
-            <input type="text" placeholder="Número" />
-            <input type="text" placeholder="Complemento" />
-            <input type="text" placeholder="Opcional" />
-            <input type="text" placeholder="Bairro" />
-            <input type="text" placeholder="Cidade" />
-            <input type="text" placeholder="UF" />
+            <CEPContainer>
+              <input type="text" placeholder="CEP" />
+            </CEPContainer>
+            <StreetContainer>
+              <input type="text" placeholder="Rua" />
+            </StreetContainer>
+            <MinorInfo>
+              <input type="text" placeholder="Número" />
+              <input type="text" placeholder="Complemento" />
+            </MinorInfo>
+            <MajorInfo>
+              <input type="text" placeholder="Bairro" />
+              <input type="text" placeholder="Cidade" />
+              <input type="text" placeholder="UF" />
+            </MajorInfo>
           </AddressInputs>
         </AddressContainer>
 
         <PaymentContainer>
           <PaymentHeader>
-            <CurrencyDollar />
-            <p>Pagamento</p>
-            <p>
-              O pagamento é feito na entrega. Escolha a forma que deseja pagar
-            </p>
+            <CurrencyDollar size={22} />
+            <div>
+              <CardTitle>Pagamento</CardTitle>
+              <CardDescription>
+                O pagamento é feito na entrega. Escolha a forma que deseja pagar
+              </CardDescription>
+            </div>
           </PaymentHeader>
 
           <PaymentOptions>
-            <span>
+            <div>
               <CreditCard />
-              <p>CARTÃO DE CRÉDITO</p>
-            </span>
+              <span>CARTÃO DE CRÉDITO</span>
+            </div>
 
-            <span>
+            <div>
               <Bank />
-              <p>CARTÃO DE DÉBITO</p>
-            </span>
+              <span>CARTÃO DE DÉBITO</span>
+            </div>
 
-            <span>
+            <div>
               <Money />
-              <p>CARTÃO DE DINHEIRO</p>
-            </span>
+              <span>DINHEIRO</span>
+            </div>
           </PaymentOptions>
         </PaymentContainer>
       </main>
       <aside>
-        <h2>Cafés selecionados</h2>
+        <SectionTitle>Cafés selecionados</SectionTitle>
         
         <SummaryContainer>
           <SelectedCoffeeContainer>
-            <img src={expresso} alt="" />
+            <CoffeeInfo>
+              <img src={expresso} alt="" />
 
-            <div>
-              <span>Expresso Tradicional</span>
-              <Actions>
-                <AmmountSelector>
-                  <Minus />
-                  <span>1</span>
-                  <Plus />
-                </AmmountSelector>
-                <RemoveCoffeeFromCartButton>
-                  <Trash weight="fill" />
-                  <span>REMOVER</span>
-                </RemoveCoffeeFromCartButton>
-              </Actions>
-            </div>
+              <div>
+                <span>Expresso Tradicional</span>
+                <Actions>
+                  <AmmountSelector>
+                    <Minus />
+                    <span>1</span>
+                    <Plus />
+                  </AmmountSelector>
+                  <RemoveCoffeeFromCartButton>
+                    <Trash weight="fill" />
+                    <span>REMOVER</span>
+                  </RemoveCoffeeFromCartButton>
+                </Actions>
+              </div>
+            </CoffeeInfo>
 
-            <span>R$ 19,80</span>
+            <CoffeeTotal>R$ 19,80</CoffeeTotal>
           </SelectedCoffeeContainer>
 
           <ListDivider />
@@ -112,18 +136,18 @@ export function Checkout() {
           <SummaryInfo>
             <div>
               <span>Total de itens</span>
-              <span>R$ 29,70</span>
+              <SummaryTotalPrice>R$ 29,70</SummaryTotalPrice>
             </div>
 
             <div>
               <span>Entrega</span>
-              <span>R$ 3,50</span>
+              <SummaryTotalPrice>R$ 3,50</SummaryTotalPrice>
             </div>
 
-            <div>
+            <SummaryTotal>
               <span>Total</span>
               <span>R$ 33,20</span>
-            </div>
+            </SummaryTotal>
           </SummaryInfo>
           
           <ConfirmOrderButton>
