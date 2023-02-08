@@ -7,7 +7,6 @@ import {
   Money,
   Plus,
   Trash,
-  TrashSimple,
 } from 'phosphor-react'
 
 import expresso from '../../assets/coffes/expresso.png'
