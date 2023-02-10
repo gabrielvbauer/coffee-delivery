@@ -1,4 +1,8 @@
-import styled from "styled-components"
+import styled, { css } from "styled-components"
+
+interface CoffeeProps {
+  isAddedToCart: boolean
+}
 
 export const CardContainer = styled.div`
   padding: 20px;
@@ -30,6 +34,11 @@ export const CardContainer = styled.div`
     color: ${(props) => props.theme['gray-600']};
     margin-bottom: 33px;
   }
+`
+
+export const BadgeContainer = styled.div`
+  display: flex;
+  gap: 4px;
 `
 
 export const Badge = styled.div`
@@ -92,7 +101,7 @@ export const AmmountSelector = styled.div`
   }
 `
 
-export const AddCoffeeToCartButton = styled.div`
+export const AddCoffeeToCartButton = styled.div<CoffeeProps>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -105,4 +114,19 @@ export const AddCoffeeToCartButton = styled.div`
   cursor: pointer;
   background-color: ${(props) => props.theme['purple-700']};
   color: ${(props) => props.theme.white};
+
+  &:hover {
+    background-color: ${(props) => props.theme['purple-500']};
+  }
+
+  ${(props) => props.isAddedToCart &&
+    css`
+      background: ${(props) => props.theme['yellow-500']};
+      /* color: ${(props) => props.theme['gray-700']}; */
+
+      &:hover {
+      background-color: ${(props) => props.theme['yellow-500']};
+    }
+    `
+  }
 `

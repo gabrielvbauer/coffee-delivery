@@ -10,11 +10,13 @@ import {
   CardContainer,
   AddCoffeeToCartButton,
   AmmountSelector,
+  BadgeContainer,
   Badge,
   Footer,
   Price,
   Actions,
 } from './styles'
+import { useState } from 'react'
 
 export type Coffee = {
   id: string
@@ -28,17 +30,40 @@ export type Coffee = {
 
 interface CoffeeProps {
   coffee: Coffee
+  onAddCoffeeToCartButton: (coffeeId: string, quantity: number) => void
 }
 
-export function Coffee({ coffee }: CoffeeProps) {
+export function Coffee({ coffee, onAddCoffeeToCartButton }: CoffeeProps) {
+  const [quantity, setQuantity] = useState(1)
+  const [isCoffeeAddedToCart, setIsCoffeeAddedToCart] = useState(false)
+
+  function onRaiseCoffeeQuantity() {
+    setQuantity((prevState) => prevState + 1)
+  }
+
+  function onLowerCoffeeQuantity() {
+    setQuantity((prevState) => prevState - 1)
+  }
+
+  function onAddCoffeeToCartButtonClick() {
+    if (isCoffeeAddedToCart) {
+      return;
+    }
+    
+    onAddCoffeeToCartButton(coffee.id, quantity)
+    setIsCoffeeAddedToCart(true)
+  }
+
   return (
     <CardContainer>
       <img src={coffee.image} alt="Café expresso" />
-      <Badge>
+      <BadgeContainer>
         {coffee.traits.map((trait) => 
-          <span>{trait}</span>
+          <Badge key={`${coffee.id}-${trait}`}>
+            <span>{trait}</span>
+          </Badge>
         )}
-      </Badge>
+      </BadgeContainer>
       <h3>{coffee.name}</h3>
       <p>{coffee.description}</p>
 
@@ -50,11 +75,11 @@ export function Coffee({ coffee }: CoffeeProps) {
 
         <Actions>
           <AmmountSelector>
-            <Minus />
-            <span>1</span>
-            <Plus />
+            <Minus onClick={onLowerCoffeeQuantity} />
+            <span>{quantity}</span>
+            <Plus onClick={onRaiseCoffeeQuantity} />
           </AmmountSelector>
-          <AddCoffeeToCartButton>
+          <AddCoffeeToCartButton isAddedToCart={isCoffeeAddedToCart} onClick={onAddCoffeeToCartButtonClick}>
             <ShoppingCart weight="fill" />
           </AddCoffeeToCartButton>
         </Actions>

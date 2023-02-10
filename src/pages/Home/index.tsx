@@ -174,8 +174,24 @@ const coffeesList: Coffee[] = [
   },
 ]
 
+type ShoppingCartItem = {
+  coffeeId: string,
+  quantity: number
+}
+
 export function Home() {
-  const [coffees, setCoffees] = useState<Coffee[]>(coffeesList)
+  const [shoppingCart, setShoppingCart] = useState<ShoppingCartItem[]>([])
+
+  function onAddCoffeeToCartButton(coffeeId: string, quantity: number) {
+    const newShoppingCartItem: ShoppingCartItem = {
+      coffeeId,
+      quantity
+    }
+
+    setShoppingCart((previousState) => [...previousState, newShoppingCartItem])
+  }
+
+  console.info(shoppingCart)
 
   return (
     <>
@@ -183,8 +199,12 @@ export function Home() {
       <OurCoffeeContainer>
         <h2>Nossos cafés</h2>
         <CoffeeListContainer>
-          {coffees.map((coffee) => 
-            <Coffee coffee={coffee} key={coffee.id} />
+          {coffeesList.map((coffee) => 
+            <Coffee 
+              key={coffee.id}
+              coffee={coffee}
+              onAddCoffeeToCartButton={onAddCoffeeToCartButton}
+            />
           )}
         </CoffeeListContainer>
       </OurCoffeeContainer>
