@@ -16,20 +16,36 @@ import {
   Actions,
 } from './styles'
 
-export function Coffee() {
+export type Coffee = {
+  id: string
+  name: string
+  description: string
+  image: string
+  traits: string[]
+  price: number
+  priceFormatted: string
+}
+
+interface CoffeeProps {
+  coffee: Coffee
+}
+
+export function Coffee({ coffee }: CoffeeProps) {
   return (
     <CardContainer>
-      <img src={expresso} alt="Café expresso" />
+      <img src={coffee.image} alt="Café expresso" />
       <Badge>
-        <span>TRADICIONAL</span>
+        {coffee.traits.map((trait) => 
+          <span>{trait}</span>
+        )}
       </Badge>
-      <h3>Expresso Tradicional</h3>
-      <p>O tradicional café feito com água quente e grãos moídos</p>
+      <h3>{coffee.name}</h3>
+      <p>{coffee.description}</p>
 
       <Footer>
         <Price>
           <span>R$</span>
-          <span>9,90</span>
+          <span>{coffee.priceFormatted}</span>
         </Price>
 
         <Actions>
