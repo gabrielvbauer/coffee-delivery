@@ -1,3 +1,6 @@
+import { useContext } from 'react'
+import { ShoppingCartContext } from '../../context/ShoppingCartContext'
+
 import { Introduction } from './Components/Introduction'
 import { Coffee } from './Components/Coffee'
 
@@ -5,7 +8,6 @@ import {
   OurCoffeeContainer,
   CoffeeListContainer,
 } from './styles'
-import { useState } from 'react'
 
 const coffeesList: Coffee[] = [
   {
@@ -174,24 +176,10 @@ const coffeesList: Coffee[] = [
   },
 ]
 
-type ShoppingCartItem = {
-  coffeeId: string,
-  quantity: number
-}
-
 export function Home() {
-  const [shoppingCart, setShoppingCart] = useState<ShoppingCartItem[]>([])
+  const {itemList, addItemToCart} = useContext(ShoppingCartContext)
 
-  function onAddCoffeeToCartButton(coffeeId: string, quantity: number) {
-    const newShoppingCartItem: ShoppingCartItem = {
-      coffeeId,
-      quantity
-    }
-
-    setShoppingCart((previousState) => [...previousState, newShoppingCartItem])
-  }
-
-  console.info(shoppingCart)
+  console.info(itemList)
 
   return (
     <>
@@ -203,7 +191,7 @@ export function Home() {
             <Coffee 
               key={coffee.id}
               coffee={coffee}
-              onAddCoffeeToCartButton={onAddCoffeeToCartButton}
+              addItemToCart={addItemToCart}
             />
           )}
         </CoffeeListContainer>

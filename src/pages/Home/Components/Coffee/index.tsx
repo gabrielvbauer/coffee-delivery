@@ -1,22 +1,20 @@
-import expresso from '../../../../assets/coffes/expresso.png'
+import { useContext, useState } from 'react'
+import { AmountSelector } from '../../../../components/AmountSelector'
 
 import {
-  Minus,
-  Plus,
   ShoppingCart,
 } from 'phosphor-react'
 
 import {
   CardContainer,
   AddCoffeeToCartButton,
-  AmmountSelector,
   BadgeContainer,
   Badge,
   Footer,
   Price,
   Actions,
 } from './styles'
-import { useState } from 'react'
+import { ShoppingCartContext } from '../../../../context/ShoppingCartContext'
 
 export type Coffee = {
   id: string
@@ -30,28 +28,31 @@ export type Coffee = {
 
 interface CoffeeProps {
   coffee: Coffee
-  onAddCoffeeToCartButton: (coffeeId: string, quantity: number) => void
+  addItemToCart: (coffee: Coffee, quantity: number) => void
 }
 
-export function Coffee({ coffee, onAddCoffeeToCartButton }: CoffeeProps) {
-  const [quantity, setQuantity] = useState(1)
-  const [isCoffeeAddedToCart, setIsCoffeeAddedToCart] = useState(false)
+export function Coffee({ coffee, addItemToCart }: CoffeeProps) {
+  const {raiseItemQuantity, lowerItemQuantity, itemList} = useContext(ShoppingCartContext)
+  const itemAddedInShoppingCart = itemList.find((item) => item.coffee.id === coffee.id)
+
+  const [quantity, setQuantity] = useState(itemAddedInShoppingCart ? itemAddedInShoppingCart.quantity : 1)
 
   function onRaiseCoffeeQuantity() {
     setQuantity((prevState) => prevState + 1)
+    raiseItemQuantity(coffee.id)
   }
 
   function onLowerCoffeeQuantity() {
     setQuantity((prevState) => prevState - 1)
+    lowerItemQuantity(coffee.id)
   }
 
   function onAddCoffeeToCartButtonClick() {
-    if (isCoffeeAddedToCart) {
+    if (itemAddedInShoppingCart) {
       return;
     }
     
-    onAddCoffeeToCartButton(coffee.id, quantity)
-    setIsCoffeeAddedToCart(true)
+    addItemToCart(coffee, quantity)
   }
 
   return (
@@ -74,12 +75,17 @@ export function Coffee({ coffee, onAddCoffeeToCartButton }: CoffeeProps) {
         </Price>
 
         <Actions>
-          <AmmountSelector>
+          {/* <AmmountSelector>
             <Minus onClick={onLowerCoffeeQuantity} />
             <span>{quantity}</span>
             <Plus onClick={onRaiseCoffeeQuantity} />
-          </AmmountSelector>
-          <AddCoffeeToCartButton isAddedToCart={isCoffeeAddedToCart} onClick={onAddCoffeeToCartButtonClick}>
+          </AmmountSelector> */}
+          <AmountSelector
+            coffeeQuantity={quantity}
+            onLowerAmount={() => onLowerCoffeeQuantity()}
+            onRaiseAmount={() => onRaiseCoffeeQuantity()}
+          />
+          <AddCoffeeToCartButton isAddedToCart={itemAddedInShoppingCart ? true : false} onClick={onAddCoffeeToCartButtonClick}>
             <ShoppingCart weight="fill" />
           </AddCoffeeToCartButton>
         </Actions>

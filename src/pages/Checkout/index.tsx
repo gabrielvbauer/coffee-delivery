@@ -1,15 +1,17 @@
+import { useContext, useEffect, useState } from 'react'
+import { ShoppingCartContext } from '../../context/ShoppingCartContext'
+import { AmountSelector } from '../../components/AmountSelector'
+
+const DELIVER_PRICE = 3.5
+
 import {
   Bank,
   CreditCard,
   CurrencyDollar,
   MapPinLine,
-  Minus,
   Money,
-  Plus,
   Trash,
 } from 'phosphor-react'
-
-import expresso from '../../assets/coffes/expresso.png'
 
 import {
   CheckoutContainer,
@@ -21,7 +23,6 @@ import {
   PaymentOptions,
   SelectedCoffeeContainer,
   Actions,
-  AmmountSelector,
   ConfirmOrderButton,
   ListDivider,
   RemoveCoffeeFromCartButton,
@@ -40,7 +41,52 @@ import {
   SummaryTotalPrice,
 } from './styles'
 
+interface Pricing {
+  itemsTotalPrice: number,
+  itemsTotalPriceFormated: string
+  deliverPrice: number
+  deliverPriceFormated: string
+  totalPrice: number
+  totalPriceFormated: string
+}
+
 export function Checkout() {
+  const {itemList, removeItemFromCart, raiseItemQuantity, lowerItemQuantity} = useContext(ShoppingCartContext)
+  const [pricing, setPricing] = useState({
+    itemsTotalPrice: 0,
+    itemsTotalPriceFormated: 'R$ 0,00',
+    deliverPrice: DELIVER_PRICE,
+    deliverPriceFormated: DELIVER_PRICE.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'}),
+    totalPrice: 0,
+    totalPriceFormated: 'R$ 0,00'
+  } as Pricing)
+
+  function onRemoveItemFromCart(coffeeId: string) {
+    removeItemFromCart(coffeeId)
+  }
+
+  useEffect(() => {
+    let itemsTotalPrice = 0
+    let totalPrice = 0
+
+    itemList.forEach((item) => {
+      itemsTotalPrice += item.totalPrice
+    })
+
+    totalPrice = itemsTotalPrice + DELIVER_PRICE
+
+    const newPricing: Pricing = {
+      itemsTotalPrice: itemsTotalPrice,
+      itemsTotalPriceFormated: itemsTotalPrice.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'}),
+      deliverPrice: DELIVER_PRICE,
+      deliverPriceFormated: DELIVER_PRICE.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'}),
+      totalPrice: totalPrice,
+      totalPriceFormated: totalPrice.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'}),
+    }
+
+    setPricing(newPricing)
+  }, [itemList])
+
   return (
     <CheckoutContainer>
       <main>
@@ -107,45 +153,47 @@ export function Checkout() {
         <SectionTitle>Cafés selecionados</SectionTitle>
         
         <SummaryContainer>
-          <SelectedCoffeeContainer>
-            <CoffeeInfo>
-              <img src={expresso} alt="" />
+          {itemList.map((item) => (
+            <SelectedCoffeeContainer>
+              <CoffeeInfo>
+                <img src={item.coffee.image} alt="" />
 
-              <div>
-                <span>Expresso Tradicional</span>
-                <Actions>
-                  <AmmountSelector>
-                    <Minus />
-                    <span>1</span>
-                    <Plus />
-                  </AmmountSelector>
-                  <RemoveCoffeeFromCartButton>
-                    <Trash weight="fill" />
-                    <span>REMOVER</span>
-                  </RemoveCoffeeFromCartButton>
-                </Actions>
-              </div>
-            </CoffeeInfo>
+                <div>
+                  <span>{item.coffee.name}</span>
+                  <Actions>
+                    <AmountSelector
+                      coffeeQuantity={item.quantity}
+                      onLowerAmount={() => lowerItemQuantity(item.coffee.id)}
+                      onRaiseAmount={() => raiseItemQuantity(item.coffee.id)}
+                    />
+                    <RemoveCoffeeFromCartButton onClick={() => onRemoveItemFromCart(item.coffee.id)}>
+                      <Trash weight="fill" />
+                      <span>REMOVER</span>
+                    </RemoveCoffeeFromCartButton>
+                  </Actions>
+                </div>
+              </CoffeeInfo>
 
-            <CoffeeTotal>R$ 19,80</CoffeeTotal>
-          </SelectedCoffeeContainer>
+              <CoffeeTotal>{item.totalPrice.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})}</CoffeeTotal>
+            </SelectedCoffeeContainer>            
+          ))}
 
           <ListDivider />
 
           <SummaryInfo>
             <div>
               <span>Total de itens</span>
-              <SummaryTotalPrice>R$ 29,70</SummaryTotalPrice>
+              <SummaryTotalPrice>{pricing.itemsTotalPriceFormated}</SummaryTotalPrice>
             </div>
 
             <div>
               <span>Entrega</span>
-              <SummaryTotalPrice>R$ 3,50</SummaryTotalPrice>
+              <SummaryTotalPrice>{pricing.deliverPriceFormated}</SummaryTotalPrice>
             </div>
 
             <SummaryTotal>
               <span>Total</span>
-              <span>R$ 33,20</span>
+              <span>{pricing.totalPriceFormated}</span>
             </SummaryTotal>
           </SummaryInfo>
           
