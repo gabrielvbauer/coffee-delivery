@@ -1,4 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as zod from 'zod'
+
 import { ShoppingCartContext } from '../../context/ShoppingCartContext'
 import { AmountSelector } from '../../components/AmountSelector'
 
@@ -40,6 +44,7 @@ import {
   SummaryTotal,
   SummaryTotalPrice,
 } from './styles'
+import { FormProvider, useForm } from 'react-hook-form'
 
 interface Pricing {
   itemsTotalPrice: number,
@@ -50,8 +55,19 @@ interface Pricing {
   totalPriceFormated: string
 }
 
+const newOrderFormValidationSchema = zod.object({
+  cep: zod.string().min(8),
+  rua: zod.string(),
+  numero: zod.number(),
+  complemento: zod.string(),
+  bairro: zod.string(),
+  cidade: zod.string(),
+  uf: zod.string(),
+})
+
+type NewOrderFormData = zod.infer<typeof newOrderFormValidationSchema>
+
 export function Checkout() {
-  const {itemList, removeItemFromCart, raiseItemQuantity, lowerItemQuantity} = useContext(ShoppingCartContext)
   const [pricing, setPricing] = useState({
     itemsTotalPrice: 0,
     itemsTotalPriceFormated: 'R$ 0,00',
@@ -61,8 +77,31 @@ export function Checkout() {
     totalPriceFormated: 'R$ 0,00'
   } as Pricing)
 
+  const navigate = useNavigate()
+
+  const {itemList, removeItemFromCart, raiseItemQuantity, lowerItemQuantity} = useContext(ShoppingCartContext)
+
+  const newOrderForm = useForm<NewOrderFormData>({
+    resolver: zodResolver(newOrderFormValidationSchema),
+    defaultValues: {
+      cep: '',
+      rua: '',
+      complemento: '',
+      numero: undefined,
+      bairro: '',
+      cidade: '',
+      uf: ''
+    }
+  })
+
+  const { register, handleSubmit } = newOrderForm
+
   function onRemoveItemFromCart(coffeeId: string) {
     removeItemFromCart(coffeeId)
+  }
+
+  function handleCreateNewOrder(data: NewOrderFormData) {
+    console.log(data)
   }
 
   useEffect(() => {
@@ -87,8 +126,16 @@ export function Checkout() {
     setPricing(newPricing)
   }, [itemList])
 
+  useEffect(() => {
+    if (itemList.length <= 0) {
+      navigate('/')
+    } else {
+      return
+    }
+  }, [itemList])
+
   return (
-    <CheckoutContainer>
+    <CheckoutContainer onSubmit={handleSubmit(handleCreateNewOrder)}>
       <main>
         <SectionTitle>Complete o seu pedido</SectionTitle>
 
@@ -103,19 +150,19 @@ export function Checkout() {
 
           <AddressInputs>
             <CEPContainer>
-              <input type="text" placeholder="CEP" />
+              <input type="text" id="cep" placeholder="CEP" {...register('cep')}  />
             </CEPContainer>
             <StreetContainer>
-              <input type="text" placeholder="Rua" />
+              <input type="text" id="rua" placeholder="Rua" {...register('rua')} />
             </StreetContainer>
             <MinorInfo>
-              <input type="text" placeholder="Número" />
-              <input type="text" placeholder="Complemento" />
+              <input type="number" id="numero" placeholder="Número" {...register('numero', {valueAsNumber: true})} />
+              <input type="text" id="complemento" placeholder="Complemento" {...register('complemento')} />
             </MinorInfo>
             <MajorInfo>
-              <input type="text" placeholder="Bairro" />
-              <input type="text" placeholder="Cidade" />
-              <input type="text" placeholder="UF" />
+              <input type="text" id="bairro" placeholder="Bairro" {...register('bairro')} />
+              <input type="text" id="cidade" placeholder="Cidade" {...register('cidade')} />
+              <input type="text" id="uf" placeholder="UF" {...register('uf')} />
             </MajorInfo>
           </AddressInputs>
         </AddressContainer>
@@ -154,7 +201,7 @@ export function Checkout() {
         
         <SummaryContainer>
           {itemList.map((item) => (
-            <SelectedCoffeeContainer>
+            <SelectedCoffeeContainer key={item.coffee.id}>
               <CoffeeInfo>
                 <img src={item.coffee.image} alt="" />
 
@@ -197,7 +244,7 @@ export function Checkout() {
             </SummaryTotal>
           </SummaryInfo>
           
-          <ConfirmOrderButton>
+          <ConfirmOrderButton type="submit">
             CONFIRMAR PEDIDO
           </ConfirmOrderButton>
         </SummaryContainer> 
