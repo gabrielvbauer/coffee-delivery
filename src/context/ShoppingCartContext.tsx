@@ -13,6 +13,7 @@ interface ShoppingCartContext {
   removeItemFromCart: (coffeeId: string) => void
   raiseItemQuantity: (coffeeId: string) => void
   lowerItemQuantity: (coffeeId: string) => void
+  emptyItemList: () => void
 }
 
 export const ShoppingCartContext = createContext({} as ShoppingCartContext)
@@ -22,7 +23,13 @@ interface ShoppingCartContextProviderProps {
 }
 
 export function ShoppingCartContextProvider({children}: ShoppingCartContextProviderProps) {
-  const [itemList, setItemList] = useState<ShoppingCartItem[]>([])
+  const [itemList, setItemList] = useState<ShoppingCartItem[]>(() => {
+    const itemListFromLocalStorage = localStorage.getItem('@coffee-delivery_item-list')
+
+    if (!itemListFromLocalStorage) return []
+
+    return JSON.parse(itemListFromLocalStorage)
+  })
 
   function raiseItemQuantity(coffeeId: string) {
     const newItemList = [...itemList]
@@ -63,6 +70,7 @@ export function ShoppingCartContextProvider({children}: ShoppingCartContextProvi
     }
 
     setItemList((previousState) => [...previousState, newItem])
+    localStorage.setItem('@coffee-delivery_item-list', JSON.stringify([...itemList, newItem]))
   }
 
   function removeItemFromCart(coffeeId: string) {
@@ -72,6 +80,12 @@ export function ShoppingCartContextProvider({children}: ShoppingCartContextProvi
     if (!cartWithoutItemToRemove) return
 
     setItemList(cartWithoutItemToRemove)
+    localStorage.setItem('@coffee-delivery_item-list', JSON.stringify(cartWithoutItemToRemove))
+  }
+
+  function emptyItemList() {
+    setItemList([])
+    localStorage.removeItem('@coffee-delivery_item-list')
   }
 
   return (
@@ -81,7 +95,8 @@ export function ShoppingCartContextProvider({children}: ShoppingCartContextProvi
         addItemToCart,
         removeItemFromCart,
         raiseItemQuantity,
-        lowerItemQuantity
+        lowerItemQuantity,
+        emptyItemList
       }}
     >
       {children}

@@ -5,14 +5,17 @@ import {
   SuccessContainer,
   InfoContainer,
   InfoItem,
-  IconContainer,
   InfoContainerGradientBorder,
   AddressIconContainer,
   PaymentIconContainer,
   TimeIconContainer,
 } from './styles'
+import { useLocation } from 'react-router-dom'
 
 export function Success() {
+  const { state } = useLocation()
+  const { order } = state
+
   return (
     <>
       <SuccessContainer>
@@ -28,9 +31,9 @@ export function Success() {
                 </AddressIconContainer>
                 <div>
                   <p>
-                    Entrega em <strong>Rua João Daniel Martinelli, 102</strong>
+                    Entrega em <strong>{order.address.rua}, {order.address.numero}</strong>
                   </p>
-                  <p>Farrapos - Porto Alegre, RS</p>
+                  <p>{order.address.cidade} - {order.address.uf}</p>
                 </div>
               </InfoItem>
 
@@ -53,7 +56,7 @@ export function Success() {
                 <div>
                   <p>Pagamento na entrega</p>
                   <p>
-                    <strong>Cartão de Crédito</strong>
+                    <strong>{order.paymentType}</strong>
                   </p>
                 </div>
               </InfoItem>

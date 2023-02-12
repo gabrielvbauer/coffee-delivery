@@ -25,6 +25,7 @@ import {
   AddressInputs,
   PaymentHeader,
   PaymentOptions,
+  PaymentButton,
   SelectedCoffeeContainer,
   Actions,
   ConfirmOrderButton,
@@ -44,7 +45,7 @@ import {
   SummaryTotal,
   SummaryTotalPrice,
 } from './styles'
-import { FormProvider, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 
 interface Pricing {
   itemsTotalPrice: number,
@@ -56,16 +57,25 @@ interface Pricing {
 }
 
 const newOrderFormValidationSchema = zod.object({
-  cep: zod.string().min(8),
-  rua: zod.string(),
-  numero: zod.number(),
-  complemento: zod.string(),
-  bairro: zod.string(),
-  cidade: zod.string(),
-  uf: zod.string(),
+  cep: zod.string().min(8, 'CEP é obrigatório').max(8),
+  rua: zod.string().min(1, 'Rua é obrigatória'),
+  numero: zod.number().min(1, 'Número é obrigatório'),
+  complemento: zod.string().optional(),
+  bairro: zod.string().min(1, 'Bairro é obrigatório'),
+  cidade: zod.string().min(1, 'Cidade é obrigatória'),
+  uf: zod.string().min(1, 'UF é obrigatória'),
 })
 
-type NewOrderFormData = zod.infer<typeof newOrderFormValidationSchema>
+const required = newOrderFormValidationSchema.required({
+  cep: true,
+  rua: true,
+  numero: true,
+  bairro: true,
+  cidade: true,
+  uf: true,
+})
+
+export type NewOrderFormData = zod.infer<typeof newOrderFormValidationSchema>
 
 export function Checkout() {
   const [pricing, setPricing] = useState({
@@ -76,10 +86,11 @@ export function Checkout() {
     totalPrice: 0,
     totalPriceFormated: 'R$ 0,00'
   } as Pricing)
+  const [paymentType, setPaymentType] = useState<'Cartão de crédito'|'Cartão de débito'|'Dinheiro'>()
 
   const navigate = useNavigate()
 
-  const {itemList, removeItemFromCart, raiseItemQuantity, lowerItemQuantity} = useContext(ShoppingCartContext)
+  const {itemList, removeItemFromCart, raiseItemQuantity, lowerItemQuantity, emptyItemList} = useContext(ShoppingCartContext)
 
   const newOrderForm = useForm<NewOrderFormData>({
     resolver: zodResolver(newOrderFormValidationSchema),
@@ -94,14 +105,24 @@ export function Checkout() {
     }
   })
 
-  const { register, handleSubmit } = newOrderForm
+  const { register, handleSubmit, reset } = newOrderForm
 
   function onRemoveItemFromCart(coffeeId: string) {
     removeItemFromCart(coffeeId)
   }
 
   function handleCreateNewOrder(data: NewOrderFormData) {
-    console.log(data)
+    if (!paymentType) return
+
+    const order = {
+      address: data,
+      paymentType: paymentType,
+      itemList: itemList
+    }
+
+    navigate('/success', { state: { order: order } })
+    reset()
+    emptyItemList()
   }
 
   useEffect(() => {
@@ -179,20 +200,32 @@ export function Checkout() {
           </PaymentHeader>
 
           <PaymentOptions>
-            <div>
+            <PaymentButton
+              type="button"
+              onClick={() => setPaymentType('Cartão de crédito')}
+              isSelected={paymentType === 'Cartão de crédito'}
+            >
               <CreditCard />
               <span>CARTÃO DE CRÉDITO</span>
-            </div>
+            </PaymentButton>
 
-            <div>
+            <PaymentButton
+              type="button" 
+              onClick={() => setPaymentType('Cartão de débito')}
+              isSelected={paymentType === 'Cartão de débito'}
+            >
               <Bank />
               <span>CARTÃO DE DÉBITO</span>
-            </div>
+            </PaymentButton>
 
-            <div>
+            <PaymentButton
+              type="button"
+              onClick={() => setPaymentType('Dinheiro')}
+              isSelected={paymentType === 'Dinheiro'}
+            >
               <Money />
               <span>DINHEIRO</span>
-            </div>
+            </PaymentButton>
           </PaymentOptions>
         </PaymentContainer>
       </main>

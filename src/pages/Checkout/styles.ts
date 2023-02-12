@@ -106,28 +106,49 @@ export const PaymentOptions = styled.div`
   margin-top: 32px;
   display: flex;
   gap: 12px;
+`
 
-  div {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
+interface PaymentButtonProps {
+  isSelected: boolean
+}
 
-    padding: 16px;
-    border-radius: 6px;
-    
-    background-color: ${(props) => props.theme['gray-400']};
+export const PaymentButton = styled.button<PaymentButtonProps>`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
 
-    span {
-      font-size: 0.75rem;
-      line-height: 160%;
-      color: ${(props) => props.theme['gray-700']}
-    }
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid;
 
-    svg {
-      color: ${(props) => props.theme['purple-500']}
-    }
+  cursor: pointer;
+  transition: .2s background-color, border-color;
+
+  background-color: ${(props) => props.isSelected
+    ? props.theme['purple-300']
+    : props.theme['gray-400']
+  };
+
+  border-color: ${(props) => props.isSelected
+    ? props.theme['purple-500']
+    : props.theme['gray-400']
+  };
+
+  span {
+    font-size: 0.75rem;
+    line-height: 160%;
+    color: ${(props) => props.theme['gray-700']}
+  }
+
+  svg {
+    color: ${(props) => props.theme['purple-500']}
+  }
+
+  &:hover {
+    background-color: ${(props) => props.theme['gray-500']};
+    border-color: ${(props) => props.theme['gray-500']};
   }
 `
 
@@ -190,6 +211,13 @@ export const RemoveCoffeeFromCartButton = styled.button`
     font-size: 0.875rem;
     color: ${(props) => props.theme['purple-500']};
     cursor: pointer;
+  }
+
+  transition: .2s background-color;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${(props) => props.theme['gray-500']};
   }
 `
 

@@ -34,6 +34,8 @@ export const ShoppingCartButton = styled.button`
   align-items: center;
   justify-content: center;
 
+  position: relative;
+
   padding: 8px;
   border: 0;
   border-radius: 6px;
@@ -42,4 +44,20 @@ export const ShoppingCartButton = styled.button`
   cursor: pointer;
   background-color: ${(props) => props.theme['yellow-300']};
   color: ${(props) => props.theme['yellow-700']};
+`
+
+export const QuantityIndicator = styled.div`
+  position: absolute;
+  top: -25%;
+  right: -25%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background-color: ${(props) => props.theme['yellow-700']};
+  color: ${(props) => props.theme.white};
 `
